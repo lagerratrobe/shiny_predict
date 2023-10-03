@@ -1,0 +1,90 @@
+---
+title: "Predict MPG"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+orientation: rows
+vertical_layout: fill
+theme: yeti
+---
+
+side{.sidebar}
+-------------------------------------------
+
+```{r}
+library(tibble)
+library(shiny)
+library(shinyWidgets)
+library(flexdashboard)
+library(httr)
+source("utilities.R")
+```
+
+
+**Enter Vehicle Traits**
+
+```
+hp|wt  |disp |gear|mpg
+62|3.19|146.7|4   |24.4
+```
+
+```{r}
+autonumericInput(
+inputId = "hp", 
+value = 62, 
+label = "hp", 
+align = "center", 
+currencySymbolPlacement = "p",
+decimalPlaces = 0,
+)
+
+autonumericInput(
+inputId = "wt", 
+value = 3.19, 
+label = "wt", 
+align = "center", 
+currencySymbolPlacement = "p", 
+decimalPlaces = 2,
+decimalCharacter = "."
+)
+
+autonumericInput(
+inputId = "disp", 
+value = 146.7, 
+label = "disp", 
+align = "center", 
+currencySymbolPlacement = "p", 
+decimalPlaces = 1,
+decimalCharacter = "."
+)
+
+autonumericInput(
+inputId = "gear", 
+value = 4, 
+label = "gear", 
+align = "center", 
+currencySymbolPlacement = "p", 
+decimalPlaces = 0,
+)
+
+actionButton("execute", "Predict")
+```
+
+abc{}
+--------------------------------------
+
+###
+```{r}
+renderValueBox({
+    req(input$execute)
+  valueBox(
+    value = get_prediction(hp = isolate(input$hp),
+                           wt = isolate(input$wt),
+                           gear = isolate(input$gear),
+                           disp = isolate(input$disp)), 
+    caption = "Estimated MPG", 
+    color = "steelblue", 
+    icon = "fa-plus"
+  )
+})
+```
